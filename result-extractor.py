@@ -7,20 +7,18 @@ import csv
 
 #Variables
 flag=0
-outRow=[[0,0,0,0]]
 
-#with open('results.csv', 'wb') as csvfile:
-#	results=csv.writer(csvfile,delimeter=' ', quotechar='|', quoting=csv.QUOTE_MINUMAL)
 results=csv.writer(open("results.csv","w"))
-results.writerow(["Roll Number", "Test Code", "Rank", "Marks"])
 
 #Display and driver setting
 display = Display(visible=0, size=(800, 600))
 display.start()
 driver = webdriver.Chrome()
 
-test_index=input("Which test results do you want:" )	
-print "Sure, just a minute.."
+test_code=input("Which test results do you want(give test code): " )	
+results.writerow(["Test",int(test_code)])
+results.writerow(["Roll Number", "Rank", "Marks"])
+print "Sure, Navigating to Bothra Classes webpage.."
 #Getting baseurl
 driver.get('http://bothraclasses.com/evalution-report/')
 assert "Student Evaluation Report" in driver.title
@@ -45,7 +43,6 @@ for x in range(0,10):
 		#print page
 
 		#Now onto BeautifulSoup!
-		
 		soup=BeautifulSoup(page)
 		#print(soup.prettify())
 		#print(type(soup))
@@ -53,20 +50,29 @@ for x in range(0,10):
 		tr=soup.find_all('tr')
 
 		#For Validity
-		if len(tr)<13:
+		if len(tr)<=6:
+			flag=1
+		elif rollno==87096:
 			flag=1
 		else:
-			#print "Now trying to find given test code"
 			#test_code=6203
 			
 			#Navigating down to the required test tr
-			foundCode=soup.find_all('tr')[len(tr)-2-test_index].find_all('td')[1].contents[0]
-			rank=soup.find_all('tr')[len(tr)-2-test_index].find_all('td')[4].contents[0]
-			score=soup.find_all('tr')[len(tr)-2-test_index].find_all('td')[3].contents[0]
-			print str(rollno)+" "+str(foundCode)+" "+str(rank)+" "+str(score)
-			#results=csv.writer(open("results.csv","w"))
-			results.writerow([int(rollno),int(foundCode),int(rank),int(score)])
-			#print foundCode
-			#print rank
-			#print score
-			#"""
+			for i in range(1,len(tr)-10):
+				foundCode=soup.find_all('tr')[len(tr)-2-i].find_all('td')[1].contents[0]
+				if str(foundCode)==str(test_code) :
+					rank=soup.find_all('tr')[len(tr)-2-i].find_all('td')[4].contents[0]
+					score=soup.find_all('tr')[len(tr)-2-i].find_all('td')[3].contents[0]
+					print str(rollno)+" "+str(rank)+" "+str(score)
+					#results=csv.writer(open("results.csv","w"))
+					results.writerow([int(rollno),int(rank),int(score)])
+					#print foundCode
+					#print rank
+					#print score
+					#"""
+				else:
+					pass
+
+#Ho gaya, ab style marte hai
+print "Done"
+print "Results are stored in 'results.csv'."
