@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib
 import webbrowser
-
+import numpy as np
 #r = urllib.urlopen('http://bothraclasses.com/evalution-report').read()
 #soup = BeautifulSoup(r)
 soup=BeautifulSoup(open("Bothra Classes | Student Evaluation Report.html"))
